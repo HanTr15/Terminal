@@ -1,0 +1,91 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #14161c;
+  color: #d8dee9;
+  font-family: "JetBrains Mono", "Cascadia Mono", "SFMono-Regular", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Layar terminal: polos, penuh satu halaman, tanpa hiasan */
+.term {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 22px 26px 32px;
+  cursor: text;
+  /* pisahkan jadi layer sendiri supaya scroll tidak memicu repaint halaman */
+  contain: content;
+  overscroll-behavior: contain;
+}
+
+.out {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font: inherit;
+  color: #d8dee9;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  margin: 0;
+}
+
+.ps1 {
+  color: #58a6ff;
+  white-space: pre;
+  flex: none;
+  margin-right: 8px;
+}
+
+.in {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  font: inherit;
+  color: #d8dee9;
+  caret-color: #d8dee9;
+}
+
+.in:disabled {
+  opacity: 1;
+}
+
+/* scrollbar tipis */
+.term::-webkit-scrollbar {
+  width: 9px;
+}
+.term::-webkit-scrollbar-thumb {
+  background: #2c3038;
+  border-radius: 6px;
+}
+.term::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (max-width: 640px) {
+  html,
+  body {
+    font-size: 15px;
+  }
+  .term {
+    padding: 16px 16px 24px;
+  }
+}

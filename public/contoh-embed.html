@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contoh Pemasangan Widget WebTerm</title>
+<style>
+  body{margin:0;font:16px/1.7 system-ui,-apple-system,Segoe UI,sans-serif;
+       background:#0f1115;color:#d8dee9}
+  .wrap{max-width:720px;margin:0 auto;padding:60px 24px 140px}
+  h1{color:#fff;font-size:30px;margin:0 0 6px}
+  p.sub{color:#8b94a3;margin:0 0 36px}
+  h2{color:#fff;font-size:18px;margin:34px 0 10px}
+  pre{background:#14161c;border:1px solid #2c3038;border-radius:8px;
+      padding:14px 16px;overflow-x:auto;font-size:13.5px;color:#a8e6c0}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace}
+  .note{border-left:3px solid #4ade80;padding-left:14px;color:#9aa4b2;font-size:14.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Contoh pemasangan widget</h1>
+  <p class="sub">Halaman ini mensimulasikan web kamu yang lain. Lihat kartu
+     melayang di pojok kanan bawah — klik untuk membuka terminal.</p>
+
+  <h2>Cara paling singkat</h2>
+  <p>Tempel satu baris ini sebelum <code>&lt;/body&gt;</code> di web kamu:</p>
+<pre><code>&lt;script src="https://DOMAIN-KAMU.vercel.app/embed.js" defer&gt;&lt;/script&gt;</code></pre>
+
+  <h2>Dengan pengaturan</h2>
+<pre><code>&lt;script src="https://DOMAIN-KAMU.vercel.app/embed.js" defer
+        data-title="CTF Challenge #3"
+        data-subtitle="8 flag — mulai dari sini"
+        data-position="bottom-right"
+        data-mode="card"
+        data-open="overlay"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>Pilihan yang tersedia</h2>
+  <ul>
+    <li><code>data-position</code> — bottom-right, bottom-left, top-right, top-left</li>
+    <li><code>data-mode</code> — <code>card</code> (judul + subjudul) atau <code>button</code> (ringkas)</li>
+    <li><code>data-open</code> — <code>overlay</code> (buka di popup) atau <code>newtab</code> (buka tab baru)</li>
+    <li><code>data-title</code>, <code>data-subtitle</code> — teks pada kartu</li>
+  </ul>
+
+  <h2>Kalau mau ditanam langsung di halaman</h2>
+  <p>Tidak perlu widget, cukup iframe biasa:</p>
+<pre><code>&lt;iframe src="https://DOMAIN-KAMU.vercel.app"
+        style="width:100%;height:520px;border:1px solid #2c3038;border-radius:10px"
+        loading="lazy" title="CTF Terminal"&gt;&lt;/iframe&gt;</code></pre>
+
+  <p class="note">Iframe-nya baru dimuat saat kartu diklik, jadi widget ini
+     hampir tidak menambah beban halaman kamu (script-nya sendiri sekitar 4&nbsp;KB).</p>
+</div>
+
+<!-- Widget-nya sendiri. Saat lokal, src-nya relatif: -->
+<script src="/embed.js" defer
+        data-title="Linux Fundamental Lab"
+        data-subtitle="8 flag — mulai dari sini"></script>
+</body>
+</html>

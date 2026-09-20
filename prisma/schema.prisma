@@ -1,0 +1,32 @@
+// Skema Prisma untuk Neon (PostgreSQL)
+//
+// Setelah mengubah file ini, jalankan:
+//   npx prisma db push
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // Connection string dengan pooling (?pgbouncer=true) — dipakai saat runtime.
+  url       = env("DATABASE_URL")
+  // Connection string langsung tanpa pooling — dipakai untuk migrasi/db push.
+  directUrl = env("DIRECT_URL")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  sessionId String   @unique @map("session_id")
+
+  // Seluruh filesystem virtual milik satu peserta.
+  fs        Json
+  cwd       String   @default("/home/student")
+  loginUser String   @default("student") @map("login_user")
+  userStack Json     @default("[]") @map("user_stack")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("sessions")
+}
