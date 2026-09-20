@@ -288,24 +288,26 @@ export default function Terminal() {
       }}
       className="term"
     >
-      <pre className="out">{screen}</pre>
-      <form onSubmit={onSubmit} className="row">
-        <span className="ps1">{pending ? `[sudo] password for ${pending.user}:` : prompt}</span>
-        <input
-          ref={inputRef}
-          className="in"
-          value={input}
-          disabled={busy}
-          type={pending ? 'password' : 'text'}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={onKeyDown}
-          autoFocus
-          autoComplete="off"
-          autoCapitalize="off"
-          autoCorrect="off"
-          spellCheck={false}
-        />
-      </form>
+      <div className="term-content">
+        <pre className="out">{screen}</pre>
+        <form onSubmit={onSubmit} className="row">
+          <span className="ps1">{pending ? `[sudo] password for ${pending.user}:` : prompt}</span>
+          <input
+            ref={inputRef}
+            className="in"
+            value={input}
+            disabled={busy}
+            type={pending ? 'password' : 'text'}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={onKeyDown}
+            autoFocus
+            autoComplete="off"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck={false}
+          />
+        </form>
+      </div>
     </div>
   );
 }
