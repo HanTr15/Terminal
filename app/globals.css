@@ -77,10 +77,21 @@ body {
   background: #14161c;
 }
 
+/*
+ * ps1 boleh menyusut & wrap ke bawah (word-break) supaya path yang
+ * panjang tidak meluber keluar baris — sebelumnya flex-shrink 0 bikin
+ * teks yang kepanjangan itu tidak pernah bisa dijangkau lewat scroll
+ * sama sekali (karena .row posisinya sticky, terpaku ke tepi viewport).
+ * max-width dibatasi supaya textarea input selalu kebagian ruang.
+ */
 .ps1 {
   color: #58a6ff;
-  white-space: pre;
-  flex: 0 0 auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  flex: 0 1 auto;
+  max-width: 65%;
+  min-width: 0;
   margin-right: 8px;
   padding-top: 1px;
 }
