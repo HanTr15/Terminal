@@ -33,6 +33,8 @@ export default function Terminal() {
   const histIdxRef = useRef(null);
   const inputRef = useRef(null);
   const scrollRef = useRef(null);
+  const rowRef = useRef(null);
+  const promptRef = useRef(null);
   const sidRef = useRef('');
 
   useEffect(() => {
@@ -54,6 +56,26 @@ export default function Terminal() {
     el.style.height = 'auto';
     el.style.height = `${el.scrollHeight}px`;
   }, [input]);
+
+  // Hanya baris pertama command diberi indent selebar prompt.
+  // Baris berikutnya otomatis mulai dari kiri frame.
+  useLayoutEffect(() => {
+    const row = rowRef.current;
+    const promptEl = promptRef.current;
+    if (!row || !promptEl) return;
+
+    const updatePromptWidth = () => {
+      row.style.setProperty(
+        '--prompt-width',
+        `${promptEl.getBoundingClientRect().width + 8}px`
+      );
+    };
+
+    updatePromptWidth();
+    const observer = new ResizeObserver(updatePromptWidth);
+    observer.observe(promptEl);
+    return () => observer.disconnect();
+  }, [prompt, pending]);
 
   // Scroll ke bawah tanpa smooth-behaviour (smooth = mahal saat output panjang)
   useEffect(() => {
@@ -307,8 +329,8 @@ export default function Terminal() {
       className="term"
     >
       <pre className="out">{screen}</pre>
-      <form onSubmit={onSubmit} className="row">
-        <span className="ps1">{pending ? `[sudo] password for ${pending.user}:` : prompt}</span>
+      <form ref={rowRef} onSubmit={onSubmit} className="row">
+        <span ref={promptRef} className="ps1">{pending ? `[sudo] password for ${pending.user}:` : prompt}</span>
         <textarea
           ref={inputRef}
           className="in"

@@ -39,12 +39,14 @@ body {
   line-height: 1.55;
 }
 
+
 .row {
   position: relative;
   display: block;
-  margin: 0;
   width: 100%;
   min-width: 0;
+  margin: 0;
+  --prompt-width: 0px;
 }
 
 .ps1 {
@@ -54,15 +56,16 @@ body {
   z-index: 2;
   color: #58a6ff;
   white-space: pre;
-  pointer-events: none;
   line-height: inherit;
+  pointer-events: none;
+  margin: 0;
 }
 
 .in {
   display: block;
+  box-sizing: border-box;
   width: 100%;
   min-width: 0;
-  text-indent: 20ch;
   min-height: 1.55em;
   height: 1.55em;
   max-height: none;
@@ -70,8 +73,6 @@ body {
   overflow-x: hidden;
   overflow-y: hidden;
   resize: none;
-  -webkit-appearance: none;
-  appearance: none;
   background: transparent;
   border: 0;
   outline: 0;
@@ -85,58 +86,9 @@ body {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   word-break: break-word;
-  display: block;
-}
 
-.in:disabled {
-  opacity: 1;
-}
-
-/* scrollbar tipis */
-.term::-webkit-scrollbar {
-  width: 9px;
-}
-.term::-webkit-scrollbar-thumb {
-  background: #2c3038;
-  border-radius: 6px;
-}
-.term::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-@media (max-width: 640px) {
-  html,
-  body {
-    font-size: 15px;
-  }
-  .term {
-    padding: 16px 16px 24px;
-  }
-}
-
-
-/* Command wrapping: prompt hanya mengambil tempat di baris pertama.
-   Baris lanjutan dimulai dari kiri frame, sesuai terminal pada screenshot. */
-.row {
-  position: relative;
-  display: block;
-  width: 100%;
-  min-width: 0;
-}
-
-.row .ps1 {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 2;
-  margin: 0;
-  pointer-events: none;
-}
-
-.row .in {
-  display: block;
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  text-indent: 20ch;
+  /* text-indent berlaku pada baris pertama saja */
+  text-indent: var(--prompt-width);
+  -webkit-appearance: none;
+  appearance: none;
 }
