@@ -40,6 +40,13 @@ export default function Terminal() {
     inputRef.current?.focus();
   }, []);
 
+  // Setelah command selesai, langsung kembalikan fokus ke prompt.
+  useEffect(() => {
+    if (!busy && !pending) {
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, [busy, pending]);
+
   // Scroll ke bawah tanpa smooth-behaviour (smooth = mahal saat output panjang)
   useEffect(() => {
     const el = scrollRef.current;
@@ -267,8 +274,16 @@ export default function Terminal() {
   return (
     <div
       ref={scrollRef}
+      onMouseDown={(e) => {
+        // Klik terminal = kembali ke prompt, kecuali sedang memilih teks.
+        if (!window.getSelection()?.toString() && e.target === e.currentTarget) {
+          inputRef.current?.focus();
+        }
+      }}
       onMouseUp={() => {
-        // jangan curi fokus kalau user sedang menyeleksi teks
+        if (!window.getSelection()?.toString()) inputRef.current?.focus();
+      }}
+      onClick={() => {
         if (!window.getSelection()?.toString()) inputRef.current?.focus();
       }}
       className="term"
