@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { HELP_TEXT, LOCAL_COMMANDS, BANNER } from '../lib/clientCommands';
 
 // Batas jumlah baris yang disimpan di layar. Baris lama dibuang supaya
@@ -46,6 +46,14 @@ export default function Terminal() {
       requestAnimationFrame(() => inputRef.current?.focus());
     }
   }, [busy, pending]);
+
+  // Ikuti tinggi isi textarea, termasuk saat history/autocomplete mengubah value.
+  useLayoutEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }, [input]);
 
   // Scroll ke bawah tanpa smooth-behaviour (smooth = mahal saat output panjang)
   useEffect(() => {
@@ -151,6 +159,11 @@ export default function Terminal() {
     e.preventDefault();
     const value = input;
     setInput('');
+    requestAnimationFrame(() => {
+      if (inputRef.current) {
+        inputRef.current.style.height = 'auto';
+      }
+    });
 
     if (pending) {
       sendPassword(value);
@@ -264,6 +277,11 @@ export default function Terminal() {
     } else if (e.ctrlKey && e.key === 'l') {
       e.preventDefault();
       setScreen('');
+    } else if (e.key === 'Enter') {
+      // Textarea dipakai supaya command bisa wrap di HP.
+      // Enter tetap berfungsi sebagai tombol kirim seperti terminal.
+      e.preventDefault();
+      onSubmit(e);
     } else if (e.ctrlKey && e.key === 'c') {
       e.preventDefault();
       append(`${prompt} ${input}^C`);
@@ -291,13 +309,22 @@ export default function Terminal() {
       <pre className="out">{screen}</pre>
       <form onSubmit={onSubmit} className="row">
         <span className="ps1">{pending ? `[sudo] password for ${pending.user}:` : prompt}</span>
-        <input
+        <textarea
           ref={inputRef}
           className="in"
           value={input}
           disabled={busy}
-          type={pending ? 'password' : 'text'}
-          onChange={(e) => setInput(e.target.value)}
+          rows={1}
+          wrap="soft"
+          enterKeyHint="send"
+          inputMode="text"
+          onChange={(e) => {
+            setInput(e.target.value);
+            // Tinggi textarea mengikuti isi supaya command panjang
+            // otomatis turun ke baris berikutnya, seperti terminal asli.
+            e.currentTarget.style.height = 'auto';
+            e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+          }}
           onKeyDown={onKeyDown}
           autoFocus
           autoComplete="off"
