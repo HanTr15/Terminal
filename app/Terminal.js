@@ -40,6 +40,24 @@ export default function Terminal() {
     inputRef.current?.focus();
   }, []);
 
+  // Textarea auto-grow: tinggi disesuaikan tiap kali isinya berubah, supaya
+  // command yang panjang wrap ke baris baru alih-alih ke-clip/scroll ke samping.
+  const resizeInput = useCallback(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }, []);
+
+  useEffect(() => {
+    resizeInput();
+  }, [input, resizeInput]);
+
+  useEffect(() => {
+    window.addEventListener('resize', resizeInput);
+    return () => window.removeEventListener('resize', resizeInput);
+  }, [resizeInput]);
+
   // Setelah command selesai, langsung kembalikan fokus ke prompt.
   useEffect(() => {
     if (!busy && !pending) {
@@ -238,6 +256,13 @@ export default function Terminal() {
   }
 
   function onKeyDown(e) {
+    // Enter selalu submit (bukan newline literal di textarea), baik saat
+    // command biasa maupun saat lagi diminta password.
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      e.currentTarget.form?.requestSubmit();
+      return;
+    }
     if (pending) return;
     const hist = histRef.current;
 
@@ -290,24 +315,25 @@ export default function Terminal() {
     >
       <div className="term-content">
         <pre className="out">{screen}</pre>
-        <form onSubmit={onSubmit} className="row">
-          <span className="ps1">{pending ? `[sudo] password for ${pending.user}:` : prompt}</span>
-          <input
-            ref={inputRef}
-            className="in"
-            value={input}
-            disabled={busy}
-            type={pending ? 'password' : 'text'}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={onKeyDown}
-            autoFocus
-            autoComplete="off"
-            autoCapitalize="off"
-            autoCorrect="off"
-            spellCheck={false}
-          />
-        </form>
       </div>
+      <form onSubmit={onSubmit} className="row">
+        <span className="ps1">{pending ? `[sudo] password for ${pending.user}:` : prompt}</span>
+        <textarea
+          ref={inputRef}
+          className={pending ? 'in in-pw' : 'in'}
+          value={input}
+          disabled={busy}
+          rows={1}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={onKeyDown}
+          autoFocus
+          autoComplete="off"
+          autoCapitalize="off"
+          autoCorrect="off"
+          spellCheck={false}
+          enterKeyHint="send"
+        />
+      </form>
     </div>
   );
 }

@@ -34,9 +34,10 @@ body {
 }
 
 /*
- * Ini adalah isi yang boleh lebih lebar dari viewport.
- * Kalau ada output/command yang panjang, browser akan membuat
- * scroll horizontal di .term, termasuk saat dibuka sebagai iframe.
+ * Ini bungkus buat output (.out) saja. Boleh lebih lebar dari viewport —
+ * kalau ada baris output yang panjang, browser akan membuat scroll
+ * horizontal di .term, termasuk saat dibuka sebagai iframe. Baris input
+ * (.row) sengaja dipisah di luar ini, lihat komentar di .row.
  */
 .term-content {
   width: max-content;
@@ -58,13 +59,22 @@ body {
   line-height: 1.55;
 }
 
+/*
+ * .row sengaja jadi anak langsung .term (bukan .term-content), supaya
+ * width: 100% di sini ngikutin lebar layar yang kelihatan, bukan lebar
+ * .term-content yang bisa melebar karena output yang panjang.
+ * position: sticky + left: 0 bikin baris input ini tetap kelihatan
+ * penuh walau user lagi scroll ke samping buat baca output lebar.
+ */
 .row {
   display: flex;
-  align-items: baseline;
-  width: max-content;
-  min-width: 100%;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
   margin: 0;
-  white-space: nowrap;
+  position: sticky;
+  left: 0;
+  background: #14161c;
 }
 
 .ps1 {
@@ -72,19 +82,19 @@ body {
   white-space: pre;
   flex: 0 0 auto;
   margin-right: 8px;
+  padding-top: 1px;
 }
 
 .in {
   /*
-   * Input tetap satu baris seperti terminal asli.
-   * Kalau command sedang diketik sangat panjang, input sendiri
-   * akan bergeser mengikuti caret; output tetap bisa di-swipe.
+   * Textarea auto-grow: kalau command yang diketik kepanjangan, teksnya
+   * wrap ke baris baru (tinggi disesuaikan lewat JS di Terminal.js),
+   * bukan ke-clip atau geser ke samping seperti <input> biasa.
    */
-  flex: 0 0 32ch;
-  width: 32ch;
-  min-width: 32ch;
-  max-width: none;
-  height: 1.55em;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  resize: none;
   background: transparent;
   border: 0;
   outline: 0;
@@ -93,9 +103,14 @@ body {
   font: inherit;
   color: #d8dee9;
   caret-color: #d8dee9;
-  white-space: nowrap;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: anywhere;
   overflow: hidden;
-  text-overflow: clip;
+}
+
+.in-pw {
+  -webkit-text-security: disc;
 }
 
 .in:disabled {
